@@ -1,0 +1,30 @@
+version: '2'
+services:
+  db:
+    image: mysql:5.7
+    volumes:
+      - "./.data/db:/var/lib/mysql"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: secret
+    networks:
+      - docker-laravel
+  redis:
+    image: redis:alpine
+    restart: always
+    networks:
+      - docker-laravel
+  web:
+      build: .
+      depends_on:
+        - db
+        - redis
+      ports:
+        - "8000:80"
+      networks:
+        - docker-laravel
+networks:  
+  docker-laravel:
