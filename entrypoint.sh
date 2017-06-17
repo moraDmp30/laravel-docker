@@ -1,12 +1,13 @@
 #!/bin/bash
 
 VERSION=5.4.*
+CREATE=false
 
 while [[ $# -gt 1 ]]; do
     param="$1"
     case $param in
         -c|--create)
-        CREATE=1
+        CREATE=true
         shift
         ;;
         -v|--version)
@@ -20,7 +21,7 @@ while [[ $# -gt 1 ]]; do
     shift
 done
 
-if [[ $CREATE ]]; then
+if [[ $CREATE = true ]]; then
     composer create-project --prefer-dist laravel/laravel:$VERSION /var/www/laravel
 fi
 

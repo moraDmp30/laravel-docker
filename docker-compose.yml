@@ -12,19 +12,33 @@ services:
       MYSQL_PASSWORD: secret
     networks:
       - docker-laravel
+    ports:
+      - "33060:3306"
   redis:
     image: redis:alpine
     restart: always
     networks:
       - docker-laravel
+  elasticsearch:
+    image: elasticsearch:1.7-alpine
+    restart: always
+    networks:
+      - docker-laravel
   web:
-      build: .
-      depends_on:
-        - db
-        - redis
-      ports:
-        - "8000:80"
-      networks:
-        - docker-laravel
-networks:  
+    build: .
+    volumes:
+      - "{path/to/project}:/var/www/laravel"
+    depends_on:
+      - db
+      - redis
+      - elasticsearch
+    links:
+      - "elasticsearch:laravel_es"
+      - "db:laravel_db"
+      - "redis:laravel_redis"
+    ports:
+      - "8000:80"
+    networks:
+      - docker-laravel
+networks:
   docker-laravel:
